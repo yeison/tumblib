@@ -8,10 +8,6 @@ public abstract class Post {
 	//Total number of Posts created.
 	static int totalCount;
 	
-	enum PostType{
-		quote, video, regular, audio, link, photo, conversation, unknown
-	}
-	
 	private long id;
 	private URL url;
 	private URL urlWithSlug;
@@ -68,6 +64,7 @@ public abstract class Post {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Please verify that the JSON's URL format is correct.");
+			System.err.println(url);
 		}
 	}
 
@@ -82,6 +79,7 @@ public abstract class Post {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Please verify that the JSON's URL format is correct.");
+			System.err.println(urlWithSlug);
 		}
 	}
 
@@ -142,8 +140,5 @@ public abstract class Post {
 	public String[] getTags() {
 		return tags;
 	}
-	
-	
-	
 	
 }
