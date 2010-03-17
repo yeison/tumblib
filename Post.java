@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
-public abstract class Post {
+public class Post {
 	//Total number of Posts created.
 	static int totalCount;
 	
@@ -20,7 +20,7 @@ public abstract class Post {
 	private String[] tags = {};
 	
 	//Very long constructor for desarialization from JSON.
-	public Post(long id, String url, String urlWithSlug, String type, long date, 
+	public Post(long id, String url, String urlWithSlug, PostType type, long date, 
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags){
 		
 		setId(id);
@@ -87,7 +87,9 @@ public abstract class Post {
 		return urlWithSlug;
 	}
 
-	abstract public void setType(String type);
+	public void setType(PostType type){
+		this.type = type;
+	}
 
 	public PostType getType() {
 		return type;
