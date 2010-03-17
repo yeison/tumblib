@@ -17,7 +17,7 @@ public class Post {
 	private int mobiles;
 	private String reblogKey = "";
 	private String slug;
-	private String[] tags = {};
+	private String[] tags;
 	
 	//Very long constructor for desarialization from JSON.
 	public Post(long id, String url, String urlWithSlug, PostType type, long date, 

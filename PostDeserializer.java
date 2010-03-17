@@ -1,10 +1,10 @@
 package tumblib;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.google.gson.*;
-
 
 
 public class PostDeserializer implements JsonDeserializer<Post> {
@@ -20,7 +20,8 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		JsonObject jpo =  post.getAsJsonObject(); 
 		
 		// TODO Auto-generated method stub
-		return null;
+		return new Post(id(jpo), url(jpo), urlWithSlug(jpo), type(jpo), date(jpo), bookmarklets(jpo), 
+				mobiles(jpo), reblogKey(jpo), slug(jpo), tags(jpo));
 	}
 	
 	/**@return The unique id number of the post as a long.**/
@@ -31,6 +32,11 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 	/**@return The URL of the post as a String.**/
 	String url(JsonObject post){
 		return post.getAsJsonPrimitive("url").getAsString();
+	}
+	
+	/**@return The URL of the post with its slug as a string.**/
+	String urlWithSlug(JsonObject post){
+		return post.getAsJsonPrimitive("url-with-slug").getAsString();
 	}
 	
 	/**@return The type of the post as a PostType object.**/
@@ -68,14 +74,16 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 	/**@return The tags that this post has been categorized under, as an array of strings.**/
 	String [] tags(JsonObject post){
 		Iterator<JsonElement> tagIterator = post.getAsJsonArray("tags").iterator();
-		String [] tags = {};
+		ArrayList<String> tags = new ArrayList<String>();
 		
-		int i = 0;
 		while(tagIterator.hasNext()){
-			tags[i] = tagIterator.next().toString();
+			tags.add(tagIterator.next().toString());
 		}
 		
-		return tags;
+		String[] tagsArray = {};
+		tagsArray = tags.toArray(tagsArray);
+		
+		return tagsArray;
 	}
 	
 	
