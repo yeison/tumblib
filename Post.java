@@ -13,6 +13,7 @@ public class Post {
 	private URL urlWithSlug;
 	private PostType type;
 	private Date date;
+	private String format;
 	private int bookmarklets;
 	private int mobiles;
 	private String reblogKey = "";
@@ -20,7 +21,7 @@ public class Post {
 	private String[] tags;
 	
 	//Very long constructor for desarialization from JSON.
-	public Post(long id, String url, String urlWithSlug, PostType type, long date, 
+	public Post(long id, String url, String urlWithSlug, PostType type, long date, String format, 
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags){
 		
 		setId(id);
@@ -28,6 +29,7 @@ public class Post {
 		setUrlWithSlug(urlWithSlug);
 		setType(type);
 		setDate(date);
+		setFormat(format);
 		setBookmarklets(bookmarklets);
 		setMobiles(mobiles);
 		setReblogKey(reblogKey);
@@ -63,7 +65,7 @@ public class Post {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("Please verify that the JSON's URL format is correct.");
+			System.err.println("Please verify that the URL format is correct.");
 			System.err.println(url);
 		}
 	}
@@ -78,7 +80,7 @@ public class Post {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("Please verify that the JSON's URL format is correct.");
+			System.err.println("Please verify that the URL format is correct.");
 			System.err.println(urlWithSlug);
 		}
 	}
@@ -101,6 +103,14 @@ public class Post {
 
 	public Date getDate() {
 		return date;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getFormat() {
+		return format;
 	}
 
 	public void setBookmarklets(int bookmarklets) {
@@ -141,6 +151,11 @@ public class Post {
 
 	public String[] getTags() {
 		return tags;
+	}
+	
+	/**@Override This method should be overriden by subclasses.**/
+	public String getContent(){
+		return "";
 	}
 	
 }

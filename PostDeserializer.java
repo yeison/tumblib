@@ -1,6 +1,13 @@
 package tumblib;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,30 +27,42 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		JsonObject jpo =  post.getAsJsonObject();
 		
 		long id = id(jpo); String url = url(jpo); String urlWithSlug = urlWithSlug(jpo); 
-		long date = date(jpo); int bookmarklets = bookmarklets(jpo); int mobiles = mobiles(jpo);
-		String reblogKey = reblogKey(jpo); String slug = slug(jpo); String[] tags = tags(jpo);
+		long date = date(jpo); String format = format(jpo); int bookmarklets = bookmarklets(jpo); 
+		int mobiles = mobiles(jpo); String reblogKey = reblogKey(jpo); String slug = slug(jpo); 
+		String[] tags = tags(jpo);
 		
 
 		PostType type = type(jpo);
 		
 		switch(type){
-//		case audio: return new AudioPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		case audio: return new AudioPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 //		mobiles, reblogKey, slug, tags);
-//		case conversation: return new ConvoPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		case conversation: return new ConvoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 //		mobiles, reblogKey, slug, tags);
-//		case link: return new LinkPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		case link: return new LinkPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 //		mobiles, reblogKey, slug, tags);
-//		case photo: return new PhotoPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		case photo: return new PhotoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 //		mobiles, reblogKey, slug, tags);
-		case quote: return new QuotePost(id, url, urlWithSlug, type, date, bookmarklets, 
+		case quote:
+			String quoteText = QuotePost.textFromJson(jpo);
+			String quoteSource = QuotePost.sourceFromJson(jpo);
+			return new QuotePost(id, url, urlWithSlug, type, date, format, bookmarklets, 
+				mobiles, reblogKey, slug, tags, quoteText, quoteSource);
+		case regular: return new RegularPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 				mobiles, reblogKey, slug, tags);
-		case regular: return new RegularPost(id, url, urlWithSlug, type, date, bookmarklets, 
-				mobiles, reblogKey, slug, tags);
-		case video: return new VideoPost(id, url, urlWithSlug, type, date, bookmarklets, 
-				mobiles, reblogKey, slug, tags);
-		default: return new Post(id, url, urlWithSlug, type, date, bookmarklets, mobiles, 
+		case video: 
+			String videoSource = VideoPost.sourceFromJson(jpo);
+			String videoCaption = VideoPost.captionFromJson(jpo);
+			String videoPlayer = VideoPost.playerFromJson(jpo);
+			return new VideoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
+				mobiles, reblogKey, slug, tags, videoSource, videoCaption, videoPlayer);
+		default: return new Post(id, url, urlWithSlug, type, date, format, bookmarklets, mobiles, 
 				reblogKey, slug, tags);
 		}
+	}
+	
+	PostType typeCheck(String type){
+		return PostType.valueOf(type);
 	}
 	
 	/**@return The unique id number of the post as a long.**/
@@ -74,6 +93,10 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		return post.getAsJsonPrimitive("unix-timestamp").getAsLong()*1000;
 	}
 	
+	String format(JsonObject post){
+		return post.getAsJsonPrimitive("format").getAsString();
+	}
+	
 	/**@return The number of times this post has been bookmarklet as int. **/
 	int bookmarklets(JsonObject post){
 		return post.getAsJsonPrimitive("bookmarklet").getAsInt();
@@ -100,7 +123,7 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		ArrayList<String> tags = new ArrayList<String>();
 		
 		while(tagIterator.hasNext()){
-			tags.add(tagIterator.next().toString());
+			tags.add(tagIterator.next().getAsString());
 		}
 		
 		String[] tagsArray = {};
@@ -110,31 +133,54 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 	}
 	
 	
-	PostType typeCheck(String type){
-		if(type == PostType.audio.toString())
-			return PostType.audio;
-		if(type == PostType.conversation.toString())
-			return PostType.conversation;
-		if(type == PostType.link.toString())
-			return PostType.link;
-		if(type == PostType.photo.toString())
-			return PostType.photo;
-		if(type == PostType.quote.toString())
-			return PostType.quote;
-		if(type == PostType.regular.toString())
-			return PostType.regular;
-		if(type == PostType.video.toString())
-			return PostType.video;
-		else
-			return PostType.unknown;
-	}
+	
 	
 	//TODO: Remove main after testing
 	public static void main(String[] args){
-//		if("audio" == PostType.audio.toString())
-//			System.out.println("True");
-//		else
-//			System.out.println("False");
+		URL u = null;
+		try {
+			u = new URL("http://newsweek.tumblr.com/api/read/json?callback=uniqueidyeison");
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		InputStream in = null;
+		try {
+			in = u.openStream();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Reader reader = new InputStreamReader(in);
+		BufferedReader breader = new BufferedReader(reader);
+		String jString = null;
+		try {
+			jString = breader.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Gson gson = new GsonBuilder().
+						registerTypeAdapter(Post.class, new PostDeserializer()).
+						create();
+		
+		jString = jString.replace("uniqueidyeison(", "");
+		if(jString.endsWith(");"))
+			jString = jString.substring(0, jString.length()-2);
+		
+		JsonParser parser = new JsonParser();
+		JsonElement ele = parser.parse(jString);
+		
+		
+		JsonObject jo = ele.getAsJsonObject();
+		Iterator<JsonElement> iter = jo.getAsJsonArray("posts").iterator();
+		
+		while(iter.hasNext()){
+			ele = iter.next();
+			Post post = gson.fromJson(ele, Post.class);
+			if(post.getClass() == VideoPost.class){
+				System.out.println(post.getContent());
+			}
+		}
 	}
-
 }
