@@ -32,42 +32,50 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		String[] tags = tags(jpo);
 		
 
-		PostType type = type(jpo);
+		PostType postType = type(jpo);
 		
-		switch(type){
+		switch(postType){
 		case audio: 
 			String caption = AudioPost.captionFromJson(jpo);
 			String player = AudioPost.playerFromJson(jpo);
 			int plays = AudioPost.playsFromJson(jpo);
-			return new AudioPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-		mobiles, reblogKey, slug, tags, caption, player, plays);
+			return new AudioPost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, caption, player, plays);
 		case conversation:
 			String convoTitle = ConvoPost.titleFromJson(jpo);
 			String convoText = ConvoPost.textFromJson(jpo);
-			return new ConvoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-		mobiles, reblogKey, slug, tags, convoTitle, convoText);
-//		case link: return new LinkPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-//		mobiles, reblogKey, slug, tags);
-//		case photo: return new PhotoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-//		mobiles, reblogKey, slug, tags);
+			return new ConvoPost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, convoTitle, convoText);
+		case link:
+			String linkText = LinkPost.textFromJson(jpo);
+			String linkUrl = LinkPost.urlFromJson(jpo);
+			String linkDescription = LinkPost.descriptionFromJson(jpo);
+			return new LinkPost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, linkText, linkUrl, linkDescription);
+		case photo:
+			String photoCaption = PhotoPost.captionFromJson(jpo);
+			String[] photoUrls = PhotoPost.urlsFromJson(jpo);
+			TumblrPhoto[] photoArray = PhotoPost.photosFromJson(jpo);
+			return new PhotoPost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, photoCaption, photoUrls, photoArray);
 		case quote:
 			String quoteText = QuotePost.textFromJson(jpo);
 			String quoteSource = QuotePost.sourceFromJson(jpo);
-			return new QuotePost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-				mobiles, reblogKey, slug, tags, quoteText, quoteSource);
+			return new QuotePost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, quoteText, quoteSource);
 		case regular:
 			String title = RegularPost.titleFromJson(jpo);
 			String body = RegularPost.bodyFromJson(jpo);
-			return new RegularPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-				mobiles, reblogKey, slug, tags, title, body);
+			return new RegularPost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, title, body);
 		case video: 
 			String videoSource = VideoPost.sourceFromJson(jpo);
 			String videoCaption = VideoPost.captionFromJson(jpo);
 			String videoPlayer = VideoPost.playerFromJson(jpo);
-			return new VideoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-				mobiles, reblogKey, slug, tags, videoSource, videoCaption, videoPlayer);
-		default: return new Post(id, url, urlWithSlug, type, date, format, bookmarklets, mobiles, 
-				reblogKey, slug, tags);
+			return new VideoPost(id, url, urlWithSlug, postType, date, format, bookmarklets, 
+					mobiles, reblogKey, slug, tags, videoSource, videoCaption, videoPlayer);
+		default: return new Post(id, url, urlWithSlug, postType, date, format, bookmarklets, mobiles, 
+					reblogKey, slug, tags);
 		}
 	}
 	
@@ -129,7 +137,13 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 	
 	/**@return The tags that this post has been categorized under, as an array of strings.**/
 	String [] tags(JsonObject post){
-		Iterator<JsonElement> tagIterator = post.getAsJsonArray("tags").iterator();
+		Iterator<JsonElement> tagIterator = null;
+		try{
+			tagIterator = post.getAsJsonArray("tags").iterator();
+		}catch(NullPointerException e){
+			System.err.println("  Post " + post.getAsJsonPrimitive("id") +" does not have tags.");
+			return null;
+		}
 		ArrayList<String> tags = new ArrayList<String>();
 		
 		while(tagIterator.hasNext()){
@@ -143,13 +157,11 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 	}
 	
 	
-	
-	
 	//TODO: Remove main after testing
 	public static void main(String[] args){
 		URL u = null;
 		try {
-			u = new URL("http://newsweek.tumblr.com/api/read/json?callback=uniqueidyeison");
+			u = new URL("http://yeisons.tumblr.com/api/read/json?callback=uniqueidyeison");
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -188,7 +200,7 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		while(iter.hasNext()){
 			ele = iter.next();
 			Post post = gson.fromJson(ele, Post.class);
-			if(post.getClass() == VideoPost.class){
+			if(post.getClass() == PhotoPost.class){
 				System.out.println(post.getContent());
 			}
 		}

@@ -31,7 +31,7 @@ public class ConvoPost extends Post {
 		return convoTitle;
 	}
 	
-	/******Static methods for deserializing ConvoPosts from JSON.******/
+	/******Static methods to be used in deserializing ConvoPosts from JSON.******/
 	static String titleFromJson(JsonObject post){
 		return post.getAsJsonPrimitive("conversation-title").getAsString();
 	}

@@ -31,7 +31,7 @@ public class QuotePost extends Post {
 		return quoteSource;
 	}
 	
-	/******Static methods for deserializing QuotePosts from JSON.******/
+	/******Static methods to be used in deserializing QuotePosts from JSON.******/
 	static String textFromJson(JsonObject post){
 		return post.getAsJsonPrimitive("quote-text").getAsString();
 	}
