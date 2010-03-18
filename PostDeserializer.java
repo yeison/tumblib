@@ -17,11 +17,33 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 			JsonDeserializationContext context) throws JsonParseException {
 		
 		//jpo: JSON Post Object
-		JsonObject jpo =  post.getAsJsonObject(); 
+		JsonObject jpo =  post.getAsJsonObject();
 		
-		// TODO Auto-generated method stub
-		return new Post(id(jpo), url(jpo), urlWithSlug(jpo), type(jpo), date(jpo), bookmarklets(jpo), 
-				mobiles(jpo), reblogKey(jpo), slug(jpo), tags(jpo));
+		long id = id(jpo); String url = url(jpo); String urlWithSlug = urlWithSlug(jpo); 
+		long date = date(jpo); int bookmarklets = bookmarklets(jpo); int mobiles = mobiles(jpo);
+		String reblogKey = reblogKey(jpo); String slug = slug(jpo); String[] tags = tags(jpo);
+		
+
+		PostType type = type(jpo);
+		
+		switch(type){
+//		case audio: return new AudioPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		mobiles, reblogKey, slug, tags);
+//		case conversation: return new ConvoPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		mobiles, reblogKey, slug, tags);
+//		case link: return new LinkPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		mobiles, reblogKey, slug, tags);
+//		case photo: return new PhotoPost(id, url, urlWithSlug, type, date, bookmarklets, 
+//		mobiles, reblogKey, slug, tags);
+		case quote: return new QuotePost(id, url, urlWithSlug, type, date, bookmarklets, 
+				mobiles, reblogKey, slug, tags);
+		case regular: return new RegularPost(id, url, urlWithSlug, type, date, bookmarklets, 
+				mobiles, reblogKey, slug, tags);
+		case video: return new VideoPost(id, url, urlWithSlug, type, date, bookmarklets, 
+				mobiles, reblogKey, slug, tags);
+		default: return new Post(id, url, urlWithSlug, type, date, bookmarklets, mobiles, 
+				reblogKey, slug, tags);
+		}
 	}
 	
 	/**@return The unique id number of the post as a long.**/
@@ -48,7 +70,8 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 	/**@return The date as a long.  The long represents a unix-timestamp: milliseconds 
 	 * since January 1, 1970, 00:00:00 GMT**/
 	long date(JsonObject post){
-		return post.getAsJsonPrimitive("unix-timestamp").getAsLong();
+		//Dates from the tumblr read api are represented in seconds not millis.
+		return post.getAsJsonPrimitive("unix-timestamp").getAsLong()*1000;
 	}
 	
 	/**@return The number of times this post has been bookmarklet as int. **/
