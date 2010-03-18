@@ -6,7 +6,7 @@ public class QuotePost extends Post {
 	private String quoteText;
 	private String quoteSource;
 	
-	QuotePost(long id, String url, String urlWithSlug, PostType type, long date, String format,
+	public QuotePost(long id, String url, String urlWithSlug, PostType type, long date, String format,
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags, 
 			String quoteText, String quoteSource){
 		

@@ -35,10 +35,17 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		PostType type = type(jpo);
 		
 		switch(type){
-//		case audio: return new AudioPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-//		mobiles, reblogKey, slug, tags);
-//		case conversation: return new ConvoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-//		mobiles, reblogKey, slug, tags);
+		case audio: 
+			String caption = AudioPost.captionFromJson(jpo);
+			String player = AudioPost.playerFromJson(jpo);
+			int plays = AudioPost.playsFromJson(jpo);
+			return new AudioPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
+		mobiles, reblogKey, slug, tags, caption, player, plays);
+		case conversation:
+			String convoTitle = ConvoPost.titleFromJson(jpo);
+			String convoText = ConvoPost.textFromJson(jpo);
+			return new ConvoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
+		mobiles, reblogKey, slug, tags, convoTitle, convoText);
 //		case link: return new LinkPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 //		mobiles, reblogKey, slug, tags);
 //		case photo: return new PhotoPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
@@ -48,8 +55,11 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 			String quoteSource = QuotePost.sourceFromJson(jpo);
 			return new QuotePost(id, url, urlWithSlug, type, date, format, bookmarklets, 
 				mobiles, reblogKey, slug, tags, quoteText, quoteSource);
-		case regular: return new RegularPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
-				mobiles, reblogKey, slug, tags);
+		case regular:
+			String title = RegularPost.titleFromJson(jpo);
+			String body = RegularPost.bodyFromJson(jpo);
+			return new RegularPost(id, url, urlWithSlug, type, date, format, bookmarklets, 
+				mobiles, reblogKey, slug, tags, title, body);
 		case video: 
 			String videoSource = VideoPost.sourceFromJson(jpo);
 			String videoCaption = VideoPost.captionFromJson(jpo);

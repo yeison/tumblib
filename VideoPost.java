@@ -7,7 +7,7 @@ public class VideoPost extends Post {
 	private String videoSource;
 	private String videoPlayer;
 	
-	VideoPost(long id, String url, String urlWithSlug, PostType type, long date, String format, 
+	public VideoPost(long id, String url, String urlWithSlug, PostType type, long date, String format, 
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags,
 			String videoSource, String videoCaption, String videoPlayer){
 		
