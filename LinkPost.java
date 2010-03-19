@@ -6,6 +6,7 @@ import java.net.URL;
 import com.google.gson.JsonObject;
 
 public class LinkPost extends Post {
+	static int count;
 	String linkText;
 	URL linkUrl;
 	String linkDescription;
@@ -18,6 +19,12 @@ public class LinkPost extends Post {
 		setLinkText(linkText);
 		setLinkUrl(linkUrl);
 		setLinkDescription(linkDescription);
+		
+		count++;
+	}
+	
+	public String getContent(){
+		return getLinkText() + "\n" + getLinkUrl();
 	}
 
 	public String getLinkText() {

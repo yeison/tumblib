@@ -148,6 +148,8 @@ public class Post {
 
 	public void setTags(String[] tags) {
 		this.tags = tags;
+		
+		
 	}
 
 	public String[] getTags() {

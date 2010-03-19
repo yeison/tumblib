@@ -1,6 +1,7 @@
 package tumblib;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,7 +17,7 @@ public class TumblrQuery {
 	
 	
 	public TumblrQuery(){
-		setUrl("http://newsweek.tumblr.com/api/json");
+		setUrl("http://newsweek.tumblr.com/api/read/json");
 	}
 	
 	/**
@@ -33,7 +34,7 @@ public class TumblrQuery {
 	 * @param subdomain The subdomain of a tumblr url. Such as "newsweek" in the case
 	 * of http://newsweek.tumblr.com.*/
 	public TumblrQuery(String subdomain){
-		setUrlString("http://" + subdomain + ".tumblr.com/api/json");
+		setUrlString("http://" + subdomain + ".tumblr.com/api/read/json");
 		setUrl(urlString);
 	}
 
@@ -90,7 +91,7 @@ public class TumblrQuery {
 			addendum += "=" + getParameters.removeFirst() + "&";
 		}
 		
-		urlString += urlString + addendum;
+		urlString += addendum;
 	}
 	
 	/**@return The JSON located at the url*/
@@ -98,10 +99,13 @@ public class TumblrQuery {
 		InputStream in = null;
 		try {
 			in = this.url.openStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		}catch (FileNotFoundException e){
 			e.printStackTrace();
-		}
+			System.err.println("Please verify that the subdomain or url provided exists.");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Please verify that the subdomain or url provided exists.");
+		} 
 		Reader reader = new InputStreamReader(in);
 		BufferedReader bufferedReader = new BufferedReader(reader);
 		String jsonString = null;

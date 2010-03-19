@@ -6,6 +6,12 @@ import java.util.Iterator;
 
 import org.apache.commons.cli.*;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class CommandLineInterface {
 
 
@@ -45,6 +51,7 @@ public class CommandLineInterface {
 			e.printStackTrace();
 		}
 
+		String tumblrJson = "";
 		try{
 			if(cl.hasOption("h") || cl.hasOption("help"))
 				printHelp(cl, options);
@@ -64,17 +71,39 @@ public class CommandLineInterface {
 					}
 				}
 				TumblrQuery tQuery;
-				String subdomain = cl.getArgs()[1];
-				if(subdomain != null);
+				try{
+					String subdomain = cl.getArgs()[0];
 					tQuery = new TumblrQuery(subdomain, optionValues);
-				else
-					tQuery(optionValues);
-				System.out.println(tQuery.getJson());
+				}catch(ArrayIndexOutOfBoundsException e){
+					tQuery = new TumblrQuery(optionValues);
+				}
+				//Get the json that corresponds to this query.
+				tumblrJson = tQuery.getJson();
 			}
 		}catch(NullPointerException e){
 			printHelp(cl, options);
 			System.exit(1);
 		}
+		
+		//Google's JSON library for Java requires some funny-looking syntax.
+		Gson gson = new GsonBuilder().
+						registerTypeAdapter(Post.class, new PostDeserializer()).
+						create();
+		
+		JsonParser jParser = new JsonParser();
+		JsonElement jElement = jParser.parse(tumblrJson);
+		
+		
+		JsonObject jObject = jElement.getAsJsonObject();
+		Iterator<JsonElement> iter = jObject.getAsJsonArray("posts").iterator();
+		
+		while(iter.hasNext()){
+			jElement = iter.next();
+			Post post = gson.fromJson(jElement, Post.class);
+		}
+		System.out.println(Post.totalCount);
+		System.out.println(RegularPost.count);
+		System.out.println(LinkPost.count);
 	}
 
 	static void printHelp(CommandLine cl, Options options){

@@ -1,13 +1,8 @@
+/**@author Yeison Rodriguez */
 package tumblib;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -156,53 +151,4 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		return tagsArray;
 	}
 	
-	
-	//TODO: Remove main after testing
-	public static void main(String[] args){
-		URL u = null;
-		try {
-			u = new URL("http://yeisons.tumblr.com/api/read/json?callback=uniqueidyeison");
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		InputStream in = null;
-		try {
-			in = u.openStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Reader reader = new InputStreamReader(in);
-		BufferedReader breader = new BufferedReader(reader);
-		String jString = null;
-		try {
-			jString = breader.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Gson gson = new GsonBuilder().
-						registerTypeAdapter(Post.class, new PostDeserializer()).
-						create();
-		
-		jString = jString.replace("uniqueidyeison(", "");
-		if(jString.endsWith(");"))
-			jString = jString.substring(0, jString.length()-2);
-		
-		JsonParser parser = new JsonParser();
-		JsonElement ele = parser.parse(jString);
-		
-		
-		JsonObject jo = ele.getAsJsonObject();
-		Iterator<JsonElement> iter = jo.getAsJsonArray("posts").iterator();
-		
-		while(iter.hasNext()){
-			ele = iter.next();
-			Post post = gson.fromJson(ele, Post.class);
-			if(post.getClass() == PhotoPost.class){
-				System.out.println(post.getContent());
-			}
-		}
-	}
 }

@@ -3,6 +3,7 @@ package tumblib;
 import com.google.gson.JsonObject;
 
 public class RegularPost extends Post {
+	static int count;
 	String title;
 	String body;
 	
@@ -11,8 +12,12 @@ public class RegularPost extends Post {
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags,
 			String title, String body){
 		
-		super(id, url, urlWithSlug, type, date, format, bookmarklets, mobiles, reblogKey, slug, tags);	
-		
+		super(id, url, urlWithSlug, type, date, format, bookmarklets, mobiles, reblogKey, slug, tags);
+		count++;
+	}
+	
+	public String getContent(){
+		return getTitle() + "\n" + getBody();
 	}
 	
 	public String getTitle() {
