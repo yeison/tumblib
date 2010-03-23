@@ -136,7 +136,7 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		try{
 			tagIterator = post.getAsJsonArray("tags").iterator();
 		}catch(NullPointerException e){
-			System.err.println("  Post " + post.getAsJsonPrimitive("id") +" does not have tags.");
+			//System.err.println("  Post " + post.getAsJsonPrimitive("id") +" does not have tags.");
 			return null;
 		}
 		ArrayList<String> tags = new ArrayList<String>();

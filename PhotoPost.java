@@ -50,7 +50,7 @@ public class PhotoPost extends Post {
 		try{
 			urlList.add(post.getAsJsonPrimitive("photo-url-1280").getAsString());	
 		}catch(NullPointerException e){
-			System.err.println("  The 1280 resolution does not exist for photo.");
+			//System.err.println("  The 1280 resolution does not exist for photo.");
 		}
 		
 		String[] urls = {};
