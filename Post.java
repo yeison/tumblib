@@ -43,11 +43,6 @@ public class Post {
 	public Post(){
 		
 	}
-	
-	// TODO: Remove main after testing
-	public static void main(String[] args){
-		
-	}
 
 	
 	/*Setter and Getter methods for instance variables. */
@@ -149,7 +144,6 @@ public class Post {
 	public void setTags(String[] tags) {
 		this.tags = tags;
 		
-		
 	}
 
 	public String[] getTags() {
@@ -158,7 +152,7 @@ public class Post {
 	
 	/**@Override This method should be overriden by subclasses.**/
 	public String getContent(){
-		return "";
+		return "\tPost Type is Unknown; no content to return.";
 	}
 	
 }
