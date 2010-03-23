@@ -6,12 +6,6 @@ import java.util.Iterator;
 
 import org.apache.commons.cli.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 public class CommandLineInterface {
 
 
@@ -39,6 +33,7 @@ public class CommandLineInterface {
 		options.addOption("s", "search", true, "Search for posts with this query.");
 		options.addOption("u", "url", true, "The url of a tumblr blog.  Useful if the blog is not a " +
 				"tumblr subdomain.");
+		
 
 		CommandLine cl = null;
 		try {
@@ -50,11 +45,18 @@ public class CommandLineInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		if(args.length == 0){
+			printHelp(cl, options);
+			System.exit(0);
+		}
 
 		String tumblrJson = "";
 		try{
-			if(cl.hasOption("h") || cl.hasOption("help"))
+			if(cl.hasOption("h") || cl.hasOption("help")){
 				printHelp(cl, options);
+				System.exit(0);
+			}
 			else{
 				//The cl.iterator returns an iterator over possible options.
 				Iterator<Option> optionIterator = cl.iterator();
@@ -85,33 +87,16 @@ public class CommandLineInterface {
 			System.exit(1);
 		}
 		
-		//Google's JSON library for Java requires some funny-looking syntax.
-		Gson gson = new GsonBuilder().
-						registerTypeAdapter(Post.class, new PostDeserializer()).
-						create();
+		new PostStatistics(tumblrJson);
 		
-		JsonParser jParser = new JsonParser();
-		JsonElement jElement = jParser.parse(tumblrJson);
-		
-		
-		JsonObject jObject = jElement.getAsJsonObject();
-		Iterator<JsonElement> iter = jObject.getAsJsonArray("posts").iterator();
-		
-		while(iter.hasNext()){
-			jElement = iter.next();
-			Post post = gson.fromJson(jElement, Post.class);
-		}
-		System.out.println(Post.totalCount);
-		System.out.println(RegularPost.count);
-		System.out.println(LinkPost.count);
 	}
 
 	static void printHelp(CommandLine cl, Options options){
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("tumblib [OPTION [ARGUMENT]]... [TUMBLR SUB-DOMAIN]" +
-				"\nThe subdomain may be that of any existing tumblr blog located at " +
-				"http://<sub-domain>.tumblr.com.  If none is provided, newsweek is used " +
-				"by default.", options);
+		formatter.printHelp("tumblib [OPTION <ARGUMENT>]... <TUMBLR SUB-DOMAIN>" +
+				"\nThe subdomain may be that of any existing tumblr blog located" +
+				"at http://<sub-domain>.tumblr.com.  If none is provided, " +
+				"newsweek is used by default.", options);
 	}
 
 }	
