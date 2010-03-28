@@ -7,6 +7,7 @@ public class VideoPost extends Post {
 	private String videoSource;
 	private String videoPlayer;
 	
+	/**This wacky constructor is meant to be used by the {@link PostDeserializer}.*/
 	public VideoPost(long id, String url, String urlWithSlug, PostType type, long date, String format, 
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags,
 			String videoSource, String videoCaption, String videoPlayer){
@@ -18,7 +19,13 @@ public class VideoPost extends Post {
 		
 	}
 
-	public void setVideoCaption(String videoCaption) {
+	/**The content of this post in a format ready for insertion into a javascript/html 
+	 * document.**/
+	public String getContent(){
+		return this.getVideoSource() + "\n" + this.getVideoCaption();
+	}
+	
+	void setVideoCaption(String videoCaption) {
 		this.videoCaption = videoCaption;
 	}
 
@@ -26,7 +33,7 @@ public class VideoPost extends Post {
 		return videoCaption;
 	}
 
-	public void setVideoSource(String videoSource) {
+	void setVideoSource(String videoSource) {
 		this.videoSource = videoSource;
 	}
 
@@ -42,11 +49,6 @@ public class VideoPost extends Post {
 		return videoPlayer;
 	}
 	
-	/**@return The content of this post in a format ready for insertion into a javascript/html 
-	 * document.**/
-	public String getContent(){
-		return this.getVideoSource() + "\n" + this.getVideoCaption();
-	}
 	
 	/******Static methods for deserializing VideoPosts from JSON.******/
 	

@@ -5,12 +5,19 @@ import java.net.URL;
 
 import com.google.gson.JsonObject;
 
+/**
+ * This class corresponds to the tumblr link post.  It contains a link, its text
+ * and a description for the link.
+ * @author Yeison Rodriguez
+ *
+ */
 public class LinkPost extends Post {
 	static int count;
 	String linkText;
 	URL linkUrl;
 	String linkDescription;
 	
+	/**This wacky constructor is meant to be used by the {@link PostDeserializer}.*/
 	public LinkPost(long id, String url, String urlWithSlug, PostType type, long date, String format,
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags, 
 			String linkText, String linkUrl, String linkDescription){
@@ -23,8 +30,11 @@ public class LinkPost extends Post {
 		count++;
 	}
 	
+	/**
+	 * Returns the url of this link, as well as a description if one exists.
+	 */
 	public String getContent(){
-		return getLinkText() + "\n" + getLinkUrl();
+		return getLinkUrl() + "\n" + getLinkDescription();
 	}
 
 	public String getLinkText() {

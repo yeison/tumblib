@@ -2,12 +2,17 @@ package tumblib;
 
 import com.google.gson.JsonObject;
 
+/**
+ * A regular post contains a title and a body.
+ * @author Yeison Rodriguez
+ *
+ */
 public class RegularPost extends Post {
 	static int count;
 	String title;
 	String body;
 	
-
+	/**This wacky constructor is meant to be used by the {@link PostDeserializer}.*/
 	RegularPost(long id, String url, String urlWithSlug, PostType type, long date, String format,
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags,
 			String title, String body){
@@ -16,6 +21,9 @@ public class RegularPost extends Post {
 		count++;
 	}
 	
+	/**
+	 * Returns the title and body of this post.
+	 */
 	public String getContent(){
 		return getTitle() + "\n" + getBody();
 	}
@@ -24,7 +32,7 @@ public class RegularPost extends Post {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -32,7 +40,7 @@ public class RegularPost extends Post {
 		return body;
 	}
 
-	public void setBody(String body) {
+	void setBody(String body) {
 		this.body = body;
 	}
 	

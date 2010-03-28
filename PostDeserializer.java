@@ -9,21 +9,31 @@ import java.util.Iterator;
 import com.google.gson.*;
 
 /**
- * This is the workhorse, the engine of the tumblib.  It essentially converts
- * the tumblr data into the Java Post objects defined by the tumblib.  First,
- * the program determines the type of a tumblr post.  Depending on the type,
- * the appropriate kind of Post is instantiated.   
+ * This is an implementation of the deserializer interface in the Gson library.  
+ * It essentially converts tumblr posts into the Java Post objects defined by 
+ * tumblib.  First, the program determines the type of a tumblr post.  Depending 
+ * on the type, the appropriate kind of tumblib Post is instantiated.
+ * <br><br>
+ * The PostDeserializer implements the JsonDeserializer from the Gson library,
+ * and implements the method "deserialize" defined by that interface.
  * @author Yeison Rodriguez
  *
  */
 
 public class PostDeserializer implements JsonDeserializer<Post> {
+	//Hide the default constructor from the JavaDoc.
+	PostDeserializer(){
+		;
+	}
 
 	/**
-	 * This is a special callback constructor that is utilized by the Gson
-	 * library to deserialize Json. 
-	 * @param JsonElement post is the post in its JSON format.
-	 * @param 
+	 * This is a special callback method that is utilized by the Gson
+	 * library to deserialize Json.  This method should not be used by the
+	 * user, and must be Public.  The JsonElement parameter "post" in this case 
+	 * must be a Json Array containing all the posts of interest.
+	 * @param post A Json Array containing tumblr posts.
+	 * @param typeOfT The class of Post.
+	 * @param context Special callback parameter used by Gson.
 	 * **/
 	public Post deserialize(JsonElement post, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
@@ -91,39 +101,61 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		}
 	}
 	
-	/**@return The type of the post as a PostType object.**/
+	/**
+	 * Extracts the type of the post from its Json, and then
+	 * calls the method TypeCheck to determine the corresponding PostType
+	 * Enum of the tumblr post.
+	 * @return The type of the post as a PostType object.**/
 	PostType type(JsonObject post){
 		String typeString = post.getAsJsonPrimitive("type").getAsString();
 		return typeCheck(typeString);
 	}
 	
+	/**
+	 * Determines the PostType of the post.
+	 * @param type The json string corresponding to the post-type.
+	 * @return The PostType Enum that represents the tumblr post-type.
+	 */
 	PostType typeCheck(String type){
 		return PostType.valueOf(type);
 	}
 	
-	/**@return The unique id number of the post as a long.**/
+	/**
+	 * Parses the Json post object for the unique id assigned by tumblr.
+	 * @return The unique id number of the post as a long.**/
 	long id(JsonObject post){
 		return post.getAsJsonPrimitive("id").getAsLong();
 	}
 	
-	/**@return The URL of the post as a String.**/
+	/**
+	 * Parses the Json post object for the url of tumblr post.
+	 * @return The URL of the post as a String.**/
 	String url(JsonObject post){
 		return post.getAsJsonPrimitive("url").getAsString();
 	}
 	
-	/**@return The URL of the post with its slug as a string.**/
+	/**
+	 * Parses the Json post object for the url of the post including the slug.
+	 * @return The URL of the post with its slug as a string.**/
 	String urlWithSlug(JsonObject post){
 		return post.getAsJsonPrimitive("url-with-slug").getAsString();
 	}
 	
 	
-	/**@return The date as a long.  The long represents a unix-timestamp: 
+	/**
+	 * Parses the Json post object for unix-timestamp of the post.
+	 * @return The date as a long.  The long represents a unix-timestamp: 
 	 * milliseconds since January 1, 1970, 00:00:00 GMT**/
 	long date(JsonObject post){
 		//Dates from the tumblr read api are represented in seconds not millis.
 		return post.getAsJsonPrimitive("unix-timestamp").getAsLong()*1000;
 	}
 	
+	/**
+	 * Parses the Json post object for the format of the tumblr post.
+	 * @param post A tumblr post in Json form.
+	 * @return The format of this post as a String.
+	 */
 	String format(JsonObject post){
 		return post.getAsJsonPrimitive("format").getAsString();
 	}
@@ -133,7 +165,8 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		return post.getAsJsonPrimitive("bookmarklet").getAsInt();
 	}
 	
-	/**@return **/
+	/**@return The number of times thist post has been read via the mobile
+	 * access point.**/
 	int mobiles(JsonObject post){
 		return post.getAsJsonPrimitive("mobile").getAsInt();
 	}
