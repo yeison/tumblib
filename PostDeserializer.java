@@ -21,10 +21,6 @@ import com.google.gson.*;
  */
 
 public class PostDeserializer implements JsonDeserializer<Post> {
-	//Hide the default constructor from the JavaDoc.
-	PostDeserializer(){
-		;
-	}
 
 	/**
 	 * This is a special callback method that is utilized by the Gson

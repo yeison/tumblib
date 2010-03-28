@@ -17,7 +17,11 @@ public class RegularPost extends Post {
 			int bookmarklets, int mobiles, String reblogKey, String slug, String[] tags,
 			String title, String body){
 		
-		super(id, url, urlWithSlug, type, date, format, bookmarklets, mobiles, reblogKey, slug, tags);
+		super(id, url, urlWithSlug, type, date, format, bookmarklets, mobiles, 
+				reblogKey, slug, tags);
+		
+		setTitle(title);
+		setBody(body);
 		count++;
 	}
 	

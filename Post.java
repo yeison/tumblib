@@ -80,7 +80,7 @@ public class Post {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Please verify that the URL format is correct.");
-			System.err.println(url);
+			System.err.println(urlString);
 		}
 	}
 
@@ -99,9 +99,8 @@ public class Post {
 	 */
 	public void setUrlWithSlug(String urlWithSlug) {
 		try {
-			this.url = new URL(urlWithSlug);
+			this.urlWithSlug = new URL(urlWithSlug);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Please verify that the URL format is correct.");
 			System.err.println(urlWithSlug);
