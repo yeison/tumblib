@@ -8,10 +8,20 @@ import java.util.Iterator;
 
 import com.google.gson.*;
 
+/**
+ * This is the workhorse, the engine of the tumblib.  It essentially converts
+ * the tumblr data into the Java Post objects defined by the tumblib.  First,
+ * the program determines the type of a tumblr post.  Depending on the type,
+ * the appropriate kind of Post is instantiated.   
+ * @author Yeison Rodriguez
+ *
+ */
 
 public class PostDeserializer implements JsonDeserializer<Post> {
 
 	/**
+	 * This is a special callback constructor that is utilized by the Gson
+	 * library to deserialize Json. 
 	 * @param JsonElement post is the post in its JSON format.
 	 * @param 
 	 * **/
@@ -21,14 +31,21 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		//jpo: JSON Post Object
 		JsonObject jpo =  post.getAsJsonObject();
 		
-		long id = id(jpo); String url = url(jpo); String urlWithSlug = urlWithSlug(jpo); 
-		long date = date(jpo); String format = format(jpo); int bookmarklets = bookmarklets(jpo); 
-		int mobiles = mobiles(jpo); String reblogKey = reblogKey(jpo); String slug = slug(jpo); 
-		String[] tags = tags(jpo);
+		//Ugly approach at saving some space.
+		long id = id(jpo); String url = url(jpo); 
+		String urlWithSlug = urlWithSlug(jpo); long date = date(jpo); 
+		String format = format(jpo); int bookmarklets = bookmarklets(jpo); 
+		int mobiles = mobiles(jpo); String reblogKey = reblogKey(jpo);
+		String slug = slug(jpo); String[] tags = tags(jpo);
 		
-
+		/*The method "type" extracts the type of the post from its Json, and then
+		 * calls the method TypeCheck to determine the corresponding PostType
+		 * Enum of the tumblr post.*/
 		PostType postType = type(jpo);
 		
+		/*This switch uses the Enum to instantiate the appropriate Post subclass.
+		 *Any special data fields that are specific to one particular subclass
+		 *are handled under the corresponding case statement.*/
 		switch(postType){
 		case audio: 
 			String caption = AudioPost.captionFromJson(jpo);
@@ -74,6 +91,12 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		}
 	}
 	
+	/**@return The type of the post as a PostType object.**/
+	PostType type(JsonObject post){
+		String typeString = post.getAsJsonPrimitive("type").getAsString();
+		return typeCheck(typeString);
+	}
+	
 	PostType typeCheck(String type){
 		return PostType.valueOf(type);
 	}
@@ -93,14 +116,9 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		return post.getAsJsonPrimitive("url-with-slug").getAsString();
 	}
 	
-	/**@return The type of the post as a PostType object.**/
-	PostType type(JsonObject post){
-		String typeString = post.getAsJsonPrimitive("type").getAsString();
-		return typeCheck(typeString);
-	}
 	
-	/**@return The date as a long.  The long represents a unix-timestamp: milliseconds 
-	 * since January 1, 1970, 00:00:00 GMT**/
+	/**@return The date as a long.  The long represents a unix-timestamp: 
+	 * milliseconds since January 1, 1970, 00:00:00 GMT**/
 	long date(JsonObject post){
 		//Dates from the tumblr read api are represented in seconds not millis.
 		return post.getAsJsonPrimitive("unix-timestamp").getAsLong()*1000;
@@ -130,7 +148,8 @@ public class PostDeserializer implements JsonDeserializer<Post> {
 		return post.getAsJsonPrimitive("slug").getAsString();
 	}
 	
-	/**@return The tags that this post has been categorized under, as an array of strings.**/
+	/**@return The tags that this post has been categorized under, as an array 
+	 * of strings.**/
 	String [] tags(JsonObject post){
 		Iterator<JsonElement> tagIterator = null;
 		try{
