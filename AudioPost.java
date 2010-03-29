@@ -28,7 +28,7 @@ public class AudioPost extends Post {
 	 * it them as a String.
 	 */
 	public String getContent(){
-		return getAudioPlayer() + "\n" + getAudioCaption();
+		return content + "\n" + getAudioPlayer() + "\n" + getAudioCaption();
 	}
 
 	/**

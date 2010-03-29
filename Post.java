@@ -28,6 +28,7 @@ public class Post {
 	private String reblogKey = "";
 	private String slug;
 	private String[] tags;
+	protected String content = "";
 	
 	/**
 	 * Very long constructor meant for instantiation by the PostDeserializer 
@@ -47,6 +48,8 @@ public class Post {
 		setReblogKey(reblogKey);
 		setSlug(slug);
 		setTags(tags);
+		
+		content += "";
 		
 		totalCount++;	
 	}	
@@ -257,7 +260,7 @@ public class Post {
 	 * @return The content of this post as a String.
 	 * @Override This method should be overriden by subclasses.**/
 	public String getContent(){
-		return "\tPost Type is Unknown; no content to return.";
+		return content;
 	}
 	/**
 	 * Reset the totalCount variable that keeps track of Posts created.

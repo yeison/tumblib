@@ -26,7 +26,7 @@ public class ConvoPost extends Post {
 	 * Returns the title and and text/body of this conversation post.
 	 */
 	public String getContent(){
-		return  getConvoTitle() + "\n" + getConvoText() ;
+		return  content + "\n" + getConvoTitle() + "\n" + getConvoText() ;
 	}
 	
 	public void setConvoText(String convoText) {

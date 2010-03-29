@@ -3,6 +3,11 @@ package tumblib;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * The TumblrPhoto class holds the caption of a photo, and various urls.
+ * @author Yeison Rodriguez
+ *
+ */
 public class TumblrPhoto {
 	String photoCaption;
 	String offset;

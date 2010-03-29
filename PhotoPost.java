@@ -26,7 +26,7 @@ public class PhotoPost extends Post {
 	 * Retrieves the url of the main photo, as well as its caption.
 	 */
 	public String getContent(){
-		return getPhotoUrl(1280) + "\n" + getCaption();
+		return content + "\n" + getPhotoUrl(1280) + "\n" + getCaption();
 	}
 
 	/**

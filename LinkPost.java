@@ -34,7 +34,7 @@ public class LinkPost extends Post {
 	 * Returns the url of this link, as well as a description if one exists.
 	 */
 	public String getContent(){
-		return getLinkUrl() + "\n" + getLinkDescription();
+		return content + "\n" + getLinkUrl() + "\n" + getLinkDescription();
 	}
 
 	public String getLinkText() {

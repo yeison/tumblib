@@ -2,6 +2,11 @@ package tumblib;
 
 import com.google.gson.JsonObject;
 
+/**
+ * The VideoPost class contains a video and a caption for the video. 
+ * @author Yeison Rodriguez
+ *
+ */
 public class VideoPost extends Post {
 	private String videoCaption;
 	private String videoSource;
@@ -22,7 +27,7 @@ public class VideoPost extends Post {
 	/**The content of this post in a format ready for insertion into a javascript/html 
 	 * document.**/
 	public String getContent(){
-		return this.getVideoSource() + "\n" + this.getVideoCaption();
+		return content + "\n" + this.getVideoSource() + "\n" + this.getVideoCaption();
 	}
 	
 	void setVideoCaption(String videoCaption) {

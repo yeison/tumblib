@@ -29,7 +29,7 @@ public class RegularPost extends Post {
 	 * Returns the title and body of this post.
 	 */
 	public String getContent(){
-		return getTitle() + "\n" + getBody();
+		return content + "\n" + getTitle() + "\n" + getBody();
 	}
 	
 	public String getTitle() {

@@ -26,7 +26,7 @@ public class QuotePost extends Post {
 	 * Returns the quote itself, and the source of the quote if it exists.
 	 */
 	public String getContent(){
-		return getQuoteText() + "\n" + getQuoteSource();
+		return content + "\n" + getQuoteText() + "\n" + getQuoteSource();
 	}
 	
 	void setQuoteText(String quoteText) {
