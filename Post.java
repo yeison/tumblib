@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class Post {
 	//Total number of Posts created.
-	static int totalCount;
+	public static int totalCount;
 	
 	private long id;
 	private URL url;
@@ -258,6 +258,12 @@ public class Post {
 	 * @Override This method should be overriden by subclasses.**/
 	public String getContent(){
 		return "\tPost Type is Unknown; no content to return.";
+	}
+	/**
+	 * Reset the totalCount variable that keeps track of Posts created.
+	 */
+	static public void resetCount(){
+		totalCount = 0;
 	}
 	
 }
